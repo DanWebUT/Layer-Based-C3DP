@@ -136,20 +136,37 @@ class ManualGcode:
 				x_prev = 0
 				y_prev = 0
 				t_prev = 0
-
+				lineprev = ""
 				replaced.write(initial_gcode)
 
 				for line in myfile.readlines():
 					if 'Layer' in line:
 						z += layerHeight
+						lineprev = line
 						# replaced.write(goToStart)
 						# new_code = 'M291 P"Wait " S3 \n G1 F200 E3 ;extrude 3mm of feed stock \n M400 \n'
 # 						newline = "M25\n" + \
 # 						"M104 S240\n"
 # 						replaced.write(newline)
 						# replaced.write(new_code)
-					elif 'Interfacing' in line or "Non-interfacing" in line:
-						pass
+					elif 'Interfacing' in line:
+						if 'Layer' in lineprev:
+							newline = "M117 Interfacing\n" + \
+                            "M25\n" + \
+                            "M104 S240\n"
+							replaced.write(newline)
+						else:
+							newline = "M117 Interfacing\n"
+							replaced.write(newline)
+					elif "Non-interfacing" in line:
+						if 'Layer' in lineprev:
+							newline = "M117 Non-Interfacing\n" + \
+                            "M25\n" + \
+                            "M104 S240\n"
+							replaced.write(newline)
+						else:
+							newline = "M117 Non-Interfacing\n"
+							replaced.write(newline)
 
 					else:
 						# splits the line and assings x, y and t values
@@ -182,6 +199,7 @@ class ManualGcode:
 						y_prev = float(y)
 						t_prev = t
 						i = i + 1
+						lineprev = line
 				replaced.write(final_gcode)
 
 
@@ -198,20 +216,38 @@ class ManualGcode:
 				x_prev = 0
 				y_prev = 0
 				t_prev = 0
+				lineprev = ""
 				replaced.write(initial_gcode)
 
 				for line in myfile.readlines():
 					if 'Layer' in line:
 						z += layerHeight
+						lineprev = line
 						# replaced.write(goToStart)
 						# new_code = 'M291 P"Wait " S3 \n G1 F200 E3 ;extrude 3mm of feed stock \n M400 \n'
 # 						newline = "M25\n" + \
 # 						"M104 S240\n"
 # 						replaced.write(newline)
 						# replaced.write(new_code)
-					elif 'Interfacing' in line or "Non-interfacing" in line:
-						pass
-
+					elif 'Interfacing' in line:
+						if 'Layer' in lineprev:
+							newline = "M117 Interfacing\n" + \
+                            "M25\n" + \
+                            "M104 S240\n"
+							replaced.write(newline)
+						else:
+							newline = "M117 Interfacing\n"
+							replaced.write(newline)
+					elif "Non-interfacing" in line:
+						if 'Layer' in lineprev:
+							newline = "M117 Non-Interfacing\n" + \
+                            "M25\n" + \
+                            "M104 S240\n"
+							replaced.write(newline)
+						else:
+							newline = "M117 Non-Interfacing\n"
+							replaced.write(newline)
+                        
 					else:
 						data = line.split()
 						x = float(data[0])
@@ -243,12 +279,14 @@ class ManualGcode:
 						y_prev = float(y)
 						t_prev = t
 						i = i + 1
+						lineprev = line
 				replaced.write(final_gcode)
 
 
 
 if __name__ == '__main__':
-	initial_gcode_robot_1 = '''M104 S240
+	initial_gcode_robot_1 = '''M117
+    M104 S240
 	M105
 	M109 S240
 	M82 ;absolute extrusion mode
